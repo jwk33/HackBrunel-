@@ -1,6 +1,9 @@
 import requests
+import json
+from GPS import get_coords
 
-def directions(originCoordinates,destinationCoordinates):
+def directions(destinationCoordinates):
+    originCoordinates = get_coords()
     origin = "origin=" + str(originCoordinates[0]) + ',' + str(originCoordinates[1])
     destination = "destination=" + str(destinationCoordinates[0]) + ',' + str(destinationCoordinates[1])
 
@@ -8,10 +11,12 @@ def directions(originCoordinates,destinationCoordinates):
     url = "https://maps.googleapis.com/maps/api/directions/json?" + origin + '&' + destination + '&' + apiKey
 
     try:
-        r = requests.get(url)
-        print(r.json())
+        getRequest = requests.get(url)
+        data = getRequest.json()
+        listRoute = data["routes"][0]["legs"]
+        print(listRoute)
     except:
         print("Exception occured")
 
 if __name__ == "__main__":
-    directions([52.201407, 0.114321],[52.200677, 0.113066])
+    directions([52.200677, 0.113066])
