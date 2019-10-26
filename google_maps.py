@@ -38,24 +38,22 @@ def directions_map(destinationCoordinates):
     url = "https://www.google.com/maps/embed/v1/directions?" + origin + '&' + destination + '&'  + apiKey 
     return url
 
-def directions_places(place):
-    apiKey = "key=AIzaSyDYZzLkcTStJFATSjN2ZHotAucE2Z4q8Yc"
-    originCoordinates = get_coords()
-    origin = "origin=" + str(originCoordinates[0]) + ',' + str(originCoordinates[1])
-    destination = "destination=" + place
+def directions_place(place):
+    apiKey = "key=AIzaSyDYZzLkcTStJFATSjN2ZHotAucE2Z4q8Yc"    
     fields_place = 'fields=geometry/location'
     try:
-        input = 'input=name'
+        input = 'input='+ place
         inputType = 'inputtype=textquery'
-        place_url = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?" + destination + '&'  + input + '&'  + inputType + '&' + fields_place +'&'  + apiKey 
+        place_url = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?" + input + '&'  + inputType + '&' + fields_place +'&'  + apiKey 
         place_data = requests.get(place_url).json()
-        print(place_data.candidates.geometry.location)
-        
+        destinationCoordinates = [place_data["candidates"][0]["geometry"]["location"]["lat"],place_data["candidates"][0]["geometry"]["location"]["lng"]]
+        print(destinationCoordinates)
     except:
         print('Error')
-
+    url_embed = directions_map(destinationCoordinates)
+    return url_embed
 
 if __name__ == "__main__":
-    directions([52.202333, 0.117272],waypoints)
-    directions_places('Queens\' College')
+    #directions([52.202333, 0.117272],waypoints)
+    directions_place('The Shard')
     
