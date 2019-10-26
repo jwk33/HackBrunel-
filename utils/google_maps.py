@@ -25,6 +25,10 @@ def directions(destinationCoordinates,waypoints):
         print(listRoute)
     except:
         print("Exception occured")
+    
+    #def coord_from_city():
+    #    print("Hello World")
 
 if __name__ == "__main__":
     directions([52.202333, 0.117272],waypoints)
+    
