@@ -5,7 +5,7 @@ with open("derulo.json") as fp:
 
 import struct as struct
 
-import network
+from network import network
 
 station = network.WLAN(network.STA_IF)
 station.active(True)
