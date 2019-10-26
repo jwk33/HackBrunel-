@@ -29,6 +29,33 @@ def directions(destinationCoordinates,waypoints):
     #def coord_from_city():
     #    print("Hello World")
 
+def directions_map(destinationCoordinates):
+    
+    apiKey = "key=AIzaSyDYZzLkcTStJFATSjN2ZHotAucE2Z4q8Yc"
+    originCoordinates = get_coords()
+    origin = "origin=" + str(originCoordinates[0]) + ',' + str(originCoordinates[1])
+    destination = "destination=" + str(destinationCoordinates[0]) + ',' + str(destinationCoordinates[1])
+    url = "https://www.google.com/maps/embed/v1/directions?" + origin + '&' + destination + '&'  + apiKey 
+    return url
+
+def directions_places(place):
+    apiKey = "key=AIzaSyDYZzLkcTStJFATSjN2ZHotAucE2Z4q8Yc"
+    originCoordinates = get_coords()
+    origin = "origin=" + str(originCoordinates[0]) + ',' + str(originCoordinates[1])
+    destination = "destination=" + place
+    fields_place = 'fields=geometry/location'
+    try:
+        input = 'input=name'
+        inputType = 'inputtype=textquery'
+        place_url = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?" + destination + '&'  + input + '&'  + inputType + '&' + fields_place +'&'  + apiKey 
+        place_data = requests.get(place_url).json()
+        print(place_data.candidates.geometry.location)
+        
+    except:
+        print('Error')
+
+
 if __name__ == "__main__":
     directions([52.202333, 0.117272],waypoints)
+    directions_places('Queens\' College')
     

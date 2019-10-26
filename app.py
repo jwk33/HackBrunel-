@@ -1,6 +1,7 @@
 import sys
 from flask import Flask,render_template,request
 import requests
+from google_maps import directions_map
 
 app = Flask(__name__)
 
@@ -10,8 +11,8 @@ def home():
 
 @app.route("/directions")
 def map_screen():
-    print('hello world')
-    destination = request.args['destination']
-    url = "https://maps.googleapis.com/maps/api/directions/json?origin=51.5489,-0.4821&destination=" + destination + '&key=AIzaSyDYZzLkcTStJFATSjN2ZHotAucE2Z4q8Yc'
-    data = requests.get(url)
-    return render_template('map_screen.html')
+    destination = [request.args['destination']]
+    print(destination + 'this one')
+    url = directions_map(destination)
+    print(url)
+    return render_template('map_screen.html',url=url)
