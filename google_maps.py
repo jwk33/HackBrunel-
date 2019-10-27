@@ -1,6 +1,7 @@
 import requests
 import json
 from GPS import get_coords, convert_to_coords
+from PIL import Image, ImageDraw, ImageFilter
 waypoints = [(52.201156,0.114311),(52.201925, 0.115470)]
 def directions(destinationCoordinates,waypoints):
     waypoints_list = []
@@ -58,14 +59,24 @@ def static_map_image(place):
     url = "https://maps.googleapis.com/maps/api/staticmap?"
     api_key = "AIzaSyDYZzLkcTStJFATSjN2ZHotAucE2Z4q8Yc"
     center = place
-    zoom = 18
-    r = requests.get(url + "center=" + center + "&zoom=" + str(zoom) + "&size=400x400&maptype=satellite&key=" + api_key)
-    f = open('mapboi.png', 'wb') 
+    zoom = 14
+    r = requests.get(url + "center=" + center + "&zoom=" + str(zoom) + "&format=jpeg&size=400x400&maptype=road&style=feature:landscape.natural%7Celement:labels.text.fill%7Cvisibility:on%7Ccolor:0xffffff&key=" + api_key)
+    f = open('tester.jpg', 'wb') 
     f.write(r.content)
     f.close()
+
+def image_editor():
+    im_rgb = Image.open('mapboi.jpg').convert("RGBA")
+    im_rgb.putalpha(100)
+    background = Image.open("tester.jpg").convert("RGBA")
+    foreground = im_rgb
+    background.paste(foreground, (0, 0), foreground)
+    background.show()
+    background.save('maper.png', format="png")
 
 if __name__ == "__main__":
     directions([52.202333, 0.117272],waypoints)
     directions_places('Queens\' College')
-    static_map_image("Dockett Building, Queens College, Cambridge")
+    static_map_image("London")
+    image_editor()
     
