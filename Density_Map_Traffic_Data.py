@@ -7,10 +7,10 @@ from scipy import signal
 import matplotlib.pyplot as plt
 import math
 year_month = '2019-07'
-kernel = np.ones((50,50))/2500
+kernel = np.ones((100,100))/10000
 g = geocoder.ipinfo('me')
-input_latitude = g.latlng[0]
-input_longitude = g.latlng[1]
+input_latitude = 51.87768652
+input_longitude = -5.171686
 input_coordinates = [input_latitude,input_longitude]
 np.set_printoptions(threshold=sys.maxsize)
 print(g.latlng)
@@ -39,7 +39,6 @@ def traffic_accident_filter(input_latitude, input_longitude):
 
 def accident_density_mapg():
     alat, alon, asev, caccsevdict, acc = traffic_accident_filter(input_latitude,input_longitude)
-    print(alat)
     f1 = 0.0435
     f = 0.0714
     coordinate_meshgrid = np.zeros((int(math.floor((input_longitude + f) * 10000) - math.floor((input_longitude - f) * 10000)), int(math.floor((input_latitude + f1) * 10000) - math.floor((input_latitude - f1) * 10000))))
@@ -76,8 +75,14 @@ def accident_density_mapg():
     unrolled_latitude = y
     unrolled_longitude = x
     unrolled_density = z
+
+    return grad, latitude_matrix,longitude_matrix, unrolled_latitude,unrolled_longitude, unrolled_density
+
+def plotter():
+    grad, latitude_matrix,longitude_matrix, unrolled_latitude,unrolled_longitude, unrolled_density =  accident_density_mapg()
     a = [min(unrolled_longitude), max(unrolled_longitude),min(unrolled_latitude), max(unrolled_latitude)]
     plt.imshow(grad, extent=a)
     plt.show()
     return
-accident_density_mapg()
+
+plotter()
