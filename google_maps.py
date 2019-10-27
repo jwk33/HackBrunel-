@@ -1,7 +1,7 @@
 import requests
 import json
 from GPS import get_coords
-waypoints = [(52.201156,0.114311),(52.201925, 0.115470)]
+waypoints_coords = [(51.552282,-0.449006),(51.542909,-0.377061)]
 def directions(destinationCoordinates,waypoints):
     waypoints_list = []
     separator = '%7C'
@@ -35,7 +35,14 @@ def directions_map(destinationCoordinates):
     originCoordinates = get_coords()
     origin = "origin=" + str(originCoordinates[0]) + ',' + str(originCoordinates[1])
     destination = "destination=" + str(destinationCoordinates[0]) + ',' + str(destinationCoordinates[1])
-    url = "https://www.google.com/maps/embed/v1/directions?" + origin + '&' + destination + '&'  + apiKey 
+    waypoints_list = []
+    separator = '%7C'
+    for i in waypoints_coords:
+        waypoints_list.append(str(i[0])+'%2C'+str(i[1]))
+    waypoints = 'waypoints='+  separator.join(waypoints_list)
+
+
+    url = "https://www.google.com/maps/embed/v1/directions?" + origin + '&' + destination + '&' + waypoints + '&'  + apiKey 
     return url
 
 def directions_place(place):
@@ -54,6 +61,6 @@ def directions_place(place):
     return url_embed
 
 if __name__ == "__main__":
-    #directions([52.202333, 0.117272],waypoints)
+    #directions([52.202333, 0.117272],waypoints_coords)
     directions_place('The Shard')
     
