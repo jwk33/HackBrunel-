@@ -66,9 +66,9 @@ def static_map_image(place):
     f.close()
 
 def image_editor():
-    im_rgb = Image.open('mapboi.jpg').convert("RGBA")
+    im_rgb = Image.open('test.png').convert("RGBA")
     im_rgb.putalpha(100)
-    background = Image.open("tester.jpg").convert("RGBA")
+    background = Image.open("mapboi.jpg").convert("RGBA")
     foreground = im_rgb
     background.paste(foreground, (0, 0), foreground)
     background.show()
