@@ -54,7 +54,6 @@ def directions_places(place):
     except:
         print('Error')
 
-
 def static_map_image(place):
     url = "https://maps.googleapis.com/maps/api/staticmap?"
     api_key = "AIzaSyDYZzLkcTStJFATSjN2ZHotAucE2Z4q8Yc"
@@ -66,7 +65,7 @@ def static_map_image(place):
     f.close()
 
 if __name__ == "__main__":
-    #directions([52.202333, 0.117272],waypoints)
-    #directions_places('Queens\' College')
+    directions([52.202333, 0.117272],waypoints)
+    directions_places('Queens\' College')
     static_map_image("Dockett Building, Queens College, Cambridge")
     

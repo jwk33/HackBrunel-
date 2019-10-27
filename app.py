@@ -1,7 +1,7 @@
 import sys
 from flask import Flask,render_template,request
 import requests
-from google_maps import directions_map
+from google_maps import directions_place
 
 app = Flask(__name__)
 
@@ -11,8 +11,7 @@ def home():
 
 @app.route("/directions")
 def map_screen():
-    destination = [request.args['destination']]
-    print(destination + 'this one')
-    url = directions_map(destination)
+    destination = request.args['destination']
+    url = directions_place(destination)
     print(url)
     return render_template('map_screen.html',url=url)
