@@ -1,6 +1,6 @@
 import requests
 import json
-from GPS import get_coords
+from GPS import get_coords, convert_to_coords
 waypoints = [(52.201156,0.114311),(52.201925, 0.115470)]
 def directions(destinationCoordinates,waypoints):
     waypoints_list = []
@@ -49,13 +49,24 @@ def directions_places(place):
         inputType = 'inputtype=textquery'
         place_url = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?" + destination + '&'  + input + '&'  + inputType + '&' + fields_place +'&'  + apiKey 
         place_data = requests.get(place_url).json()
-        print(place_data.candidates.geometry.location)
+        print(place_data)
         
     except:
         print('Error')
 
 
+def static_map_image(place):
+    url = "https://maps.googleapis.com/maps/api/staticmap?"
+    api_key = "AIzaSyDYZzLkcTStJFATSjN2ZHotAucE2Z4q8Yc"
+    center = place
+    zoom = 18
+    r = requests.get(url + "center=" + center + "&zoom=" + str(zoom) + "&size=400x400&maptype=satellite&key=" + api_key)
+    f = open('mapboi.png', 'wb') 
+    f.write(r.content)
+    f.close()
+
 if __name__ == "__main__":
-    directions([52.202333, 0.117272],waypoints)
-    directions_places('Queens\' College')
+    #directions([52.202333, 0.117272],waypoints)
+    #directions_places('Queens\' College')
+    static_map_image("Dockett Building, Queens College, Cambridge")
     
