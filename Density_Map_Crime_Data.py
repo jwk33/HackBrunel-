@@ -13,13 +13,14 @@ input_latitude = g.latlng[0]
 input_longitude = g.latlng[1]
 input_coordinates = [input_latitude,input_longitude]
 np.set_printoptions(threshold=sys.maxsize)
-print(g.latlng)
-f = 0.0714
-print(gpy.distance(input_coordinates, (input_latitude, input_longitude + f)).miles)
+# print(g.latlng)
+# print(gpy.distance(input_coordinates, (input_latitude, input_longitude + f)).miles)
 
 def crime_location_filter(input_latitude, input_longitude,year_month):
     import requests
     import json
+    f1 = 0.0435
+    f = 0.0714
     url = "https://data.police.uk/api/crimes-street/all-crime?lat={}&lng={}&date={}&poly={},{}:{},{}:{},{}:{},{}".format(input_latitude, input_longitude, year_month, input_latitude - 0.0435, input_longitude - f, input_latitude + 0.0435, input_longitude - f, input_latitude - 0.0145, input_longitude + 0.0119, input_latitude + 0.0145, input_longitude + 0.0119)
     requests = requests.get(url)
     crime_data = requests.json()
@@ -47,23 +48,24 @@ def crime_location_filter(input_latitude, input_longitude,year_month):
 
 def density_map_generator():
     cc, ct, cw,clat,clon,ccd, crime_dict = crime_location_filter(input_latitude,input_longitude,year_month)
-
-    coordinate_meshgrid = np.zeros((int(math.floor((input_longitude + f) * 10000) - math.floor((input_longitude - f) * 10000)), int(math.floor((input_latitude + 0.0435) * 10000) - math.floor((input_latitude - 0.0435) * 10000))))
-    latitude_matrix = np.zeros((int(math.floor((input_longitude + f) * 10000) - math.floor((input_longitude - f) * 10000)), int(math.floor((input_latitude + 0.0435) * 10000) - math.floor((input_latitude - 0.0435) * 10000))))
-    longitude_matrix = np.zeros((int(math.floor((input_longitude + f) * 10000) - math.floor((input_longitude - f) * 10000)), int(math.floor((input_latitude + 0.0435) * 10000) - math.floor((input_latitude - 0.0435) * 10000))))
+    f1 = 0.0435
+    f = 0.0714
+    coordinate_meshgrid = np.zeros((int(math.floor((input_longitude + f) * 10000) - math.floor((input_longitude - f) * 10000)), int(math.floor((input_latitude + f1) * 10000) - math.floor((input_latitude - f1) * 10000))))
+    latitude_matrix = np.zeros((int(math.floor((input_longitude + f) * 10000) - math.floor((input_longitude - f) * 10000)), int(math.floor((input_latitude + f1) * 10000) - math.floor((input_latitude - f1) * 10000))))
+    longitude_matrix = np.zeros((int(math.floor((input_longitude + f) * 10000) - math.floor((input_longitude - f) * 10000)), int(math.floor((input_latitude + f1) * 10000) - math.floor((input_latitude - f1) * 10000))))
 
     for i in range(math.floor((input_longitude - f) * 10000), math.floor((input_longitude + f) * 10000)):
-        for j in range(math.floor((input_latitude-0.0435)*10000), math.floor((input_latitude+0.0435)*10000)):
+        for j in range(math.floor((input_latitude - f1) * 10000), math.floor((input_latitude + f1) * 10000)):
             # print(i-math.floor((input_longitude-0.0119)*10000),j-(input_latitude-0.0145)*10000)
 
             if (round(float(i/10000),4),round(float(j/10000),4)) in cc:
                 # print(i-math.floor((input_longitude-0.0119)*10000),j-math.floor((input_latitude-0.0145)*10000))
-                coordinate_meshgrid[i - math.floor((input_longitude - f) * 10000), j - math.floor((input_latitude - 0.0435) * 10000)] = float(crime_dict[ccd[round(float(i / 10000), 4), round(float(j / 10000), 4)]])
-                latitude_matrix[i - math.floor((input_longitude - f) * 10000), j - math.floor((input_latitude - 0.0435) * 10000)] = j / 10000
-                longitude_matrix[i - math.floor((input_longitude - f) * 10000), j - math.floor((input_latitude - 0.0435) * 10000)] = i / 10000
+                coordinate_meshgrid[i - math.floor((input_longitude - f) * 10000), j - math.floor((input_latitude - f1) * 10000)] = float(crime_dict[ccd[round(float(i / 10000), 4), round(float(j / 10000), 4)]])
+                latitude_matrix[i - math.floor((input_longitude - f) * 10000), j - math.floor((input_latitude - f1) * 10000)] = round(float(j / 10000),4)
+                longitude_matrix[i - math.floor((input_longitude - f) * 10000), j - math.floor((input_latitude - f1) * 10000)] = round(float(i / 10000),4)
             else:
                 try:
-                    coordinate_meshgrid[i - math.floor((input_longitude - f) * 10000), j - math.floor((input_latitude - 0.0435) * 10000)] = 0
+                    coordinate_meshgrid[i - math.floor((input_longitude - f) * 10000), j - math.floor((input_latitude - f1) * 10000)] = 0
                 except IndexError:
                     break;
 
@@ -84,7 +86,9 @@ def density_map_generator():
     unrolled_longitude = x
     unrolled_density = z
     a = [min(unrolled_longitude), max(unrolled_longitude),min(unrolled_latitude), max(unrolled_latitude)]
-
+    figure, axes = plt.subplots()
     plt.imshow(grad, extent=a)
-    plt.show()
+    plt.imsave('test.png',grad)
+
     return
+density_map_generator()
